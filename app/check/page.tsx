@@ -24,29 +24,33 @@ export default function CheckPage() {
   const router = useRouter();
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
-  const completedCount = useMemo(() => {
-    return questions.filter((q) => answers[q.id] !== undefined).length;
+  const completedCount = useMemo(function () {
+    return questions.filter(function (q) {
+      return answers[q.id] !== undefined;
+    }).length;
   }, [answers]);
 
   const progress = Math.round((completedCount / questions.length) * 100);
   const completed = completedCount === questions.length;
 
-  const handleChange = (id: string, value: number) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
+  function handleChange(id: string, value: number) {
+    setAnswers(function (prev) {
+      return {
+        ...prev,
+        [id]: value,
+      };
+    });
+  }
 
-  const handleSubmit = () => {
+  function handleSubmit() {
     const params = new URLSearchParams();
 
-    Object.entries(answers).forEach(([key, value]) => {
+    Object.entries(answers).forEach(function ([key, value]) {
       params.set(key, String(value));
     });
 
     router.push("/result?" + params.toString());
-  };
+  }
 
   return (
     <main className="container">
@@ -67,35 +71,41 @@ export default function CheckPage() {
           </span>
         </div>
         <div className="progressBar" aria-hidden="true">
-          <span style={{ width: progress + "%" }} />
+          <span style={{ width: progress + "%" }}></span>
         </div>
       </section>
 
-      {questions.map((q, index) => (
-        <section key={q.id} className="questionCard">
-          <span className="questionIndex">QUESTION {index + 1}</span>
-          <h2 className="questionTitle">{q.text}</h2>
+      {questions.map(function (q, index) {
+        return (
+          <section key={q.id} className="questionCard">
+            <span className="questionIndex">QUESTION {index + 1}</span>
+            <h2 className="questionTitle">{q.text}</h2>
 
-          <div className="choiceGroup">
-            {choices.map((choice) => (
-              <label key={choice.value} className="choiceLabel">
-                <input
-                  className="choiceInput"
-                  type="radio"
-                  name={q.id}
-                  value={choice.value}
-                  checked={answers[q.id] === choice.value}
-                  onChange={() => handleChange(q.id, choice.value)}
-                />
-                <span className="choiceBox">
-                  <span className="choiceDot" />
-                  <span className="choiceText">{choice.label}</span>
-                </span>
-              </label>
-            ))}
-          </div>
-        </section>
-      ))}
+            <div className="choiceGroup">
+              {choices.map(function (choice) {
+                return (
+                  <label key={choice.value} className="choiceLabel">
+                    <input
+                      className="choiceInput"
+                      type="radio"
+                      name={q.id}
+                      value={choice.value}
+                      checked={answers[q.id] === choice.value}
+                      onChange={function () {
+                        handleChange(q.id, choice.value);
+                      }}
+                    />
+                    <span className="choiceBox">
+                      <span className="choiceDot"></span>
+                      <span className="choiceText">{choice.label}</span>
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
 
       <div className="stickyAction">
         <div className="stickyActionInner">
