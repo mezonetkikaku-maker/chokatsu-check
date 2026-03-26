@@ -1,80 +1,219 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const questions = [
-  { id: "cold", text: "最近、冷えを感じやすい" },
-  { id: "bowel", text: "便通が不安定だと感じる" },
-  { id: "stress", text: "ストレスや疲れがたまりやすい" },
-  { id: "sleep", text: "睡眠の質が気になる" },
-  { id: "diet", text: "食生活が乱れがち" },
-  { id: "refresh", text: "身体をすっきりさせたい気分が強い" },
+  { id: "cold", text: "最近、冷えを感じやすい" },
+  { id: "bowel", text: "便通が不安定だと感じる" },
+  { id: "stress", text: "ストレスや疲れがたまりやすい" },
+  { id: "sleep", text: "睡眠の質が気になる" },
+  { id: "diet", text: "食生活が乱れがち" },
+  { id: "refresh", text: "身体をすっきりさせたい気分が強い" },
 ] as const;
 
 const choices = [
-  { label: "あてはまる", value: 4 },
-  { label: "ややあてはまる", value: 3 },
-  { label: "どちらでもない", value: 2 },
-  { label: "あまりあてはまらない", value: 1 },
-  { label: "あてはまらない", value: 0 },
+  { label: "あてはまる", value: 4 },
+  { label: "ややあてはまる", value: 3 },
+  { label: "どちらでもない", value: 2 },
+  { label: "あまりあてはまらない", value: 1 },
+  { label: "あてはまらない", value: 0 },
 ] as const;
 
 export default function CheckPage() {
-  const router = useRouter();
-  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const router = useRouter();
+  const [answers, setAnswers] = useState<Record<string, number>>({});
 
-  const handleChange = (id: string, value: number) => {
-    setAnswers((prev) => ({ ...prev, [id]: value }));
-  };
+  const completedCount = useMemo(
+    () => questions.filter((q) => answers[q.id] !== undefined).length,
+    [answers]
+  );
 
-  const handleSubmit = () => {
-    const params = new URLSearchParams();
-    Object.entries(answers).forEach(([key, value]) => {
-      params.set(key, String(value));
-    });
-    router.push(`/result?${params.toString()}`);
-  };
+  const progress = Math.round((completedCount / questions.length) * 100);
+  const completed = completedCount === questions.length;
 
-  const completed = questions.every((q) => answers[q.id] !== undefined);
+  const handleChange = (id: string, value: number) => {
+    setAnswers((prev) => ({ ...prev, [id]: value }));
+  };
 
-  return (
-    <main className="container">
-      <section className="hero">
-        <span className="eyebrow">QUESTION</span>
-        <h1 className="title">あなたの今に合う入浴体験をチェック</h1>
-        <p className="lead">
-          すべての質問にお答えください。回答内容から、おすすめの過ごし方をご提案します。
-        </p>
-      </section>
+  const handleSubmit = () => {
+    const params = new URLSearchParams();
+    Object.entries(answers).forEach(([key, value]) => {
+      params.set(key, String(value));
+    });
+    router.push(`/result?${params.toString()}`);
+  };
 
-      {questions.map((q, index) => (
-        <section key={q.id} className="questionCard">
-          <h2 className="questionTitle">
-            Q{index + 1}. {q.text}
-          </h2>
-          <div className="choiceGroup">
-            {choices.map((choice) => (
-              <label key={choice.value} className="choiceLabel">
-                <input
-                  type="radio"
-                  name={q.id}
-                  value={choice.value}
-                  checked={answers[q.id] === choice.value}
-                  onChange={() => handleChange(q.id, choice.value)}
-                />
-                {choice.label}
-              </label>
-            ))}
-          </div>
-        </section>
-      ))}
+  return (
+    <main className="container">
+      <header className="pageHeader">
+        <span className="eyebrow">QUESTION</span>
+        <h1 className="pageTitle">あなたの今に合う入浴体験をチェック</h1>
+        <p className="pageLead">
+          すべての質問にお答えください。回答内容をもとに、
+          今の気分や生活傾向に合わせたおすすめの入浴プランをご提案します。
+        </p>
+      </header>
 
-      <div className="actions">
-        <button className="button" onClick={handleSubmit} disabled={!completed}>
-          結果を見る
-        </button>
-      </div>
-    </main>
-  );
+      <section className="progressWrap" aria-label="進捗">
+        <div className="progressMeta">
+          <span>回答状況</span>
+          <span>
+            {completedCount} / {questions.length}
+          </span>
+        </div>
+        <div className="progressBar" aria-hidden="true">
+          <span style={{ width: `${progress}%` }} />
+        </div>
+      </section>
+
+      {questions.map((q, index) => (
+        <section key={q.id} className="questionCard">
+          <span className="questionIndex">QUESTION {index + 1}</span>
+          <h2 className="questionTitle">{q.text}</h2>
+
+          <div className="choiceGroup">
+            {choices.map((choice) => (
+              <label key={choice.value} className="choiceLabel">
+                <input
+                  className="choiceInput"
+                  type="radio"
+                  name={q.id}
+                  value={choice.value}
+                  checked={answers[q.id] === choice.value}
+                  onChange={() => handleChange(q.id, choice.value)}
+                />
+                <span className="choiceBox">
+                  <span className="choiceDot" />
+                  <span className="choiceText">{choice.label}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      <div className="stickyAction">
+        <div className="stickyActionInner">
+          <div className="stickyMeta">
+            {completed
+              ? "すべての回答が完了しました。結果ページへ進めます。"
+              : "すべての質問に回答すると、結果を確認できます。"}
+          </div>
+          <button className="button" onClick={handleSubmit} disabled={!completed}>
+            結果を見る
+          </button>
+        </div>
+      </div>
+    </main>
+  );
+}[11:03]"use client";
+
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+
+const questions = [
+  { id: "cold", text: "最近、冷えを感じやすい" },
+  { id: "bowel", text: "便通が不安定だと感じる" },
+  { id: "stress", text: "ストレスや疲れがたまりやすい" },
+  { id: "sleep", text: "睡眠の質が気になる" },
+  { id: "diet", text: "食生活が乱れがち" },
+  { id: "refresh", text: "身体をすっきりさせたい気分が強い" },
+] as const;
+
+const choices = [
+  { label: "あてはまる", value: 4 },
+  { label: "ややあてはまる", value: 3 },
+  { label: "どちらでもない", value: 2 },
+  { label: "あまりあてはまらない", value: 1 },
+  { label: "あてはまらない", value: 0 },
+] as const;
+
+export default function CheckPage() {
+  const router = useRouter();
+  const [answers, setAnswers] = useState<Record<string, number>>({});
+
+  const completedCount = useMemo(
+    () => questions.filter((q) => answers[q.id] !== undefined).length,
+    [answers]
+  );
+
+  const progress = Math.round((completedCount / questions.length) * 100);
+  const completed = completedCount === questions.length;
+
+  const handleChange = (id: string, value: number) => {
+    setAnswers((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = () => {
+    const params = new URLSearchParams();
+    Object.entries(answers).forEach(([key, value]) => {
+      params.set(key, String(value));
+    });
+    router.push(`/result?${params.toString()}`);
+  };
+
+  return (
+    <main className="container">
+      <header className="pageHeader">
+        <span className="eyebrow">QUESTION</span>
+        <h1 className="pageTitle">あなたの今に合う入浴体験をチェック</h1>
+        <p className="pageLead">
+          すべての質問にお答えください。回答内容をもとに、
+          今の気分や生活傾向に合わせたおすすめの入浴プランをご提案します。
+        </p>
+      </header>
+
+      <section className="progressWrap" aria-label="進捗">
+        <div className="progressMeta">
+          <span>回答状況</span>
+          <span>
+            {completedCount} / {questions.length}
+          </span>
+        </div>
+        <div className="progressBar" aria-hidden="true">
+          <span style={{ width: `${progress}%` }} />
+        </div>
+      </section>
+
+      {questions.map((q, index) => (
+        <section key={q.id} className="questionCard">
+          <span className="questionIndex">QUESTION {index + 1}</span>
+          <h2 className="questionTitle">{q.text}</h2>
+
+          <div className="choiceGroup">
+            {choices.map((choice) => (
+              <label key={choice.value} className="choiceLabel">
+                <input
+                  className="choiceInput"
+                  type="radio"
+                  name={q.id}
+                  value={choice.value}
+                  checked={answers[q.id] === choice.value}
+                  onChange={() => handleChange(q.id, choice.value)}
+                />
+                <span className="choiceBox">
+                  <span className="choiceDot" />
+                  <span className="choiceText">{choice.label}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      <div className="stickyAction">
+        <div className="stickyActionInner">
+          <div className="stickyMeta">
+            {completed
+              ? "すべての回答が完了しました。結果ページへ進めます。"
+              : "すべての質問に回答すると、結果を確認できます。"}
+          </div>
+          <button className="button" onClick={handleSubmit} disabled={!completed}>
+            結果を見る
+          </button>
+        </div>
+      </div>
+    </main>
+  );
 }
