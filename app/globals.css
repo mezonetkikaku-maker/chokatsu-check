@@ -1,0 +1,161 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Hiragino Sans",
+    "Yu Gothic",
+    "Noto Sans JP",
+    sans-serif;
+  background: #f8f5ef;
+  color: #222;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 20px 56px;
+}
+
+.hero {
+  padding: 56px 0 32px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: #7a6f63;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.2;
+  margin: 0 0 16px;
+}
+
+.lead {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #4c4a46;
+  margin: 0 0 24px;
+}
+
+.note {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: #6b675f;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}
+
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: none;
+  background: #1f6b5b;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button:disabled {
+  background: #b9b3aa;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.questionCard {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}
+
+.questionTitle {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+
+.choiceGroup {
+  display: grid;
+  gap: 10px;
+}
+
+.choiceLabel {
+  display: block;
+  border: 1px solid #e4ddd4;
+  border-radius: 14px;
+  padding: 12px 14px;
+  cursor: pointer;
+  background: #fffdf9;
+}
+
+.choiceLabel input {
+  margin-right: 8px;
+}
+
+.resultTitle {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin: 8px 0 12px;
+}
+
+.resultDescription {
+  line-height: 1.9;
+  color: #4c4a46;
+}
+
+.planList {
+  margin: 18px 0 0;
+  padding-left: 1.2rem;
+  line-height: 1.9;
+}
+
+.sectionTitle {
+  font-size: 1.05rem;
+  margin: 24px 0 10px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #e8f3f0;
+  color: #1f6b5b;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
