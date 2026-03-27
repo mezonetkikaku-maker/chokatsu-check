@@ -9,7 +9,7 @@ export default function HomePage() {
           <h1 className="title">
             今日の気分と
             <br />
-            からだに合う入浴体験をご提案
+            からだに合う<br />入浴体験をご提案
           </h1>
           <p className="lead">
             質問に答えるだけで、今の生活傾向や気分に合わせた
